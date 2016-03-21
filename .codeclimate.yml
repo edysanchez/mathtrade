@@ -1,0 +1,30 @@
+engines:
+    phpcodesniffer:
+        enabled: true
+        config:
+            standard: "PSR1,PSR2"
+            file_extensions:
+                - php
+    phpmd:
+        enabled: true
+        config:
+            file_extensions:
+                - php
+    eslint:
+        enabled: true
+    csslint:
+        enabled: true
+    duplication:
+        enabled: true
+            config:
+                languages:
+                    - php
+                    - javascript
+ratings:
+    paths:
+        - "**.php"
+        - app/**
+        - lib/**
+    exclude_paths:
+        - spec/**/*
+        - "**/vendor/**/*"
