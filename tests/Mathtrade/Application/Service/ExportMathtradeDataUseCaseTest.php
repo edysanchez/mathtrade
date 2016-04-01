@@ -94,7 +94,7 @@ class ExportMathtradeDataUseCaseTest extends \PHPUnit_Framework_TestCase
         $exportData = $response->exportData();
         $this->assertNotEmpty($exportData['games']);
         $this->assertNotEmpty($exportData['wildCards']);
-        $this->assertNotEmpty($exportData['wildCards'][0]['games']);
+        $this->assertNotEmpty($exportData['wildCards'][0]['wildCardItems']);
     }
 
 }

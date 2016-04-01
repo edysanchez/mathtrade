@@ -5,8 +5,6 @@ namespace Edysanchez\Mathtrade\Domain\Model\WildCard;
 
 
 
-use Edysanchez\Mathtrade\Domain\Model\MathtradeItem\MathtradeItem;
-
 class WildCard
 {
     /**
@@ -19,17 +17,17 @@ class WildCard
     private $userId;
 
     /**
-     * @var MathtradeItem[]
+     * @var WildCardItem[]
      */
-    private $games;
+    private $wildCardItems;
     
     private $id;
 
-    public function __construct($id, $name, $userId, $games)
+    public function __construct($id, $name, $userId, $wildCardItems)
     {
         $this->name = $name;
         $this->userId = $userId;
-        $this->games = $games;
+        $this->wildCardItems = $wildCardItems;
         $this->id = $id;
     }
 
@@ -50,11 +48,11 @@ class WildCard
     }
 
     /**
-     * @return \Edysanchez\Mathtrade\Domain\Model\MathtradeItem\MathtradeItem[]
+     * @return WildCardItem[]
      */
-    public function games()
+    public function wildCardItems()
     {
-        return $this->games;
+        return $this->wildCardItems;
     }
 
     /**

@@ -42,21 +42,11 @@ class MathtradeItemRepository implements BaseMathtradeItemRepository
         $this->gameRepository = $gameRepository;
     }
 
-    /**
-     * @param MathtradeItem $game
-     */
-    public function add(MathtradeItem $mathtradeItem)
-    {
-        throw new BadMethodCallException();
-    }
-
-
     public function findAll()
     {
         $mathtradeItemSql = "SELECT id,item_id,created FROM items_mt";
         $mathtradeItemsResultSet = $this->connection->fetchAll($mathtradeItemSql);
         $mathtradeItems = array();
-        $games = array();
         foreach ($mathtradeItemsResultSet as $mathtradeItemResult) {
 
             $games = array();
@@ -69,5 +59,17 @@ class MathtradeItemRepository implements BaseMathtradeItemRepository
             array_push($mathtradeItems, $mathtradeItem);
         }
         return $mathtradeItems;
+    }
+    public function find($id)
+    {
+        $mathtradeItemSql = "SELECT id,item_id,created FROM items_mt where id= ? ";
+        $mathtradeItemsResultSet = $this->connection->fetchAll($mathtradeItemSql,array($id));
+        $game = $this->gameRepository->find(intval($mathtradeItemsResultSet[0]['item_id']));
+
+        $mathtradeItem = new MathtradeItem(
+            utf8_encode($mathtradeItemsResultSet[0]['id']),
+            $game
+        );
+        return $mathtradeItem;
     }
 }

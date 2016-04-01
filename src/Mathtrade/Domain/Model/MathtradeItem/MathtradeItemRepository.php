@@ -9,4 +9,9 @@ interface MathtradeItemRepository
      * @return MathtradeItem[]
      */
     public function findAll();
+    
+    /**
+     * @return MathtradeItem
+     */
+    public function find($id);
 }

@@ -38,18 +38,36 @@ class ExportMathtradeDataUseCase
         }
 
         $wildCards = $this->wildCardRepository->findAll();
-        foreach($wildCards as $wildCard) {
+
+        $data = $this->plainWildCards($wildCards, $data);
+        return new ExportMathtradeDataResponse($data);
+    }
+
+    /**
+     * @param $wildCards
+     * @param $data
+     * @return mixed
+     */
+    protected function plainWildCards($wildCards, $data)
+    {
+        foreach ($wildCards as $wildCard) {
             $plainWildCard = array();
             $plainWildCard['id'] = $wildCard->id();
             $plainWildCard['user_id'] = $wildCard->userId();
             $plainWildCard['name'] = $wildCard->name();
-            $plainWildCard['games'] = array();
-            foreach ($wildCard->games() as $game) {
-                $plainWildCard['games'][]= $game;
+            $plainWildCard['wildCardItems'] = array();
+
+            foreach ($wildCard->wildCardItems() as $wildCardItem) {
+                $plainWildCardItem = array();
+                $plainWildCardItem['id'] = $wildCardItem->id();
+                $plainWildCardItem['mathtradeItem']['id'] = $wildCardItem->mathTradeItem()->id();
+                $plainWildCardItem['mathtradeItem']['game'] = $wildCardItem->mathTradeItem()->game();
+                $plainWildCardItem['position'] = $wildCardItem->position();
+                $plainWildCard['wildCardItems'][] = $plainWildCardItem;
+
             }
             $data['wildCards'][] = $plainWildCard;
         }
-
-        return new ExportMathtradeDataResponse($data);
+        return $data;
     }
 }
