@@ -10,6 +10,7 @@ use Edysanchez\Mathtrade\Application\Service\GetImportableBoardGameGeekGames\Get
 use Edysanchez\Mathtrade\Infrastructure\Persistence\Doctrine\DoctrineClient;
 use Edysanchez\Mathtrade\Infrastructure\Persistence\Doctrine\Game\GameRepository;
 use Edysanchez\Mathtrade\Infrastructure\Persistence\Doctrine\Item\ItemRepository;
+use Edysanchez\Mathtrade\Infrastructure\Persistence\XmlApi\BoardGameGeekXmlApiService;
 use Edysanchez\Mathtrade\Infrastructure\Persistence\XmlApi\Game\BoardGameGeekRepository;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\TwigServiceProvider;
@@ -131,7 +132,7 @@ class Application
         });
 
         $app['board_game_geek_game_repository'] = $app->share(function () {
-            return new BoardGameGeekRepository();
+            return new BoardGameGeekRepository(new BoardGameGeekXmlApiService());
         });
 
         $app['board_game_geek_import'] = $app->share(function () use ($app) {
