@@ -11,8 +11,7 @@ class BoardGameGeekXmlApiService
 {
 
     public function findTradeableByUsername($username) {
-        define('USER_TRADE_REQUEST', 'http://boardgamegeek.com/xmlapi2/collection?username=' . $username . '&trade=1');
-        return $this->getData();
+        return $this->queryTradeablesByUsername($username);
 
     }
     /**
@@ -54,11 +53,11 @@ class BoardGameGeekXmlApiService
      * @return mixed
      * @throws Exception
      */
-    protected function getData()
+    protected function queryTradeablesByUsername($username)
     {
         $bggClient = new Client();
 
-        $queryRequest = $bggClient->get(USER_TRADE_REQUEST);
+        $queryRequest = $bggClient->get($this->getTradeableQueryUrlByUsername($username));
         $queryResponse = $queryRequest->send();
 
         $this->guardFromHTTPError($queryResponse);
@@ -70,5 +69,14 @@ class BoardGameGeekXmlApiService
 
         $this->guardFromApiError($xml);
         return $xml->children();
+    }
+
+    /**
+     * @param $username
+     * @return string
+     */
+    private function getTradeableQueryUrlByUsername($username)
+    {
+        return 'http://boardgamegeek.com/xmlapi2/collection?username=' . $username . '&trade=1';
     }
 }
