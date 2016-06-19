@@ -11,6 +11,7 @@
         "silex/silex": "~1.2",
         "twig/twig": "*",
         "doctrine/dbal": "~2.2",
+        "doctrine/orm": "2.*",
         "deralex/yaml-config-service-provider": "1.0.x-dev"
 
     },

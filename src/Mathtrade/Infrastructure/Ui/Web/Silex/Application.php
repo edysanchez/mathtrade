@@ -6,10 +6,10 @@ use DerAlex\Silex\YamlConfigServiceProvider;
 use Doctrine\DBAL\Connection;
 use Edysanchez\Mathtrade\Application\Service\AddBoardGameGeekGames\AddBoardGameGeekGamesUseCase;
 use Edysanchez\Mathtrade\Application\Service\ExportMathtradeData\ExportMathtradeDataUseCase;
-use Edysanchez\Mathtrade\Application\Service\GetAllItems\GetAllItemsUseCase;
 use Edysanchez\Mathtrade\Application\Service\GetAllMathtradeItems\GetAllMathtradeItemsUseCase;
 use Edysanchez\Mathtrade\Application\Service\GetImportableBoardGameGeekGames\GetImportableBoardGameGeekGamesUseCase;
 use Edysanchez\Mathtrade\Infrastructure\Persistence\Doctrine\DoctrineClient;
+use Edysanchez\Mathtrade\Infrastructure\Persistence\Doctrine\EntityManagerFactory;
 use Edysanchez\Mathtrade\Infrastructure\Persistence\Doctrine\Game\GameRepository;
 use Edysanchez\Mathtrade\Infrastructure\Persistence\Doctrine\MathtradeItem\MathtradeItemRepository;
 use Edysanchez\Mathtrade\Infrastructure\Persistence\Doctrine\WildCard\WildCardRepository;
@@ -24,13 +24,7 @@ class Application
 
     public static function getUser($hash)
     {
-        global $app;
-        //Get the user
-        $sql = "SELECT * FROM users WHERE hash = ?";
-        $user = $app['db']->fetchAll($sql, array($hash));
-        $user = $user[0];
 
-        return $user;
     }
 
     public static function getWantUser($user)
@@ -77,6 +71,7 @@ class Application
         return $user;
     }
 
+
     /**
      * @param $userName
      * @return string
@@ -104,10 +99,31 @@ class Application
             'db.options' => $app['config']['database']
         ));
 
-        $app['item_repository'] = $app->share(function () use ($app) {
-            $repo = new MathtradeItemRepository($app['doctrine_client'], $app['game_repository']);
+        $app['doctrine_client'] = $app->share(function () use ($app) {
+            $databaseConfig = $app['config']['database'];
 
-            return $repo;
+            return new DoctrineClient(
+                $databaseConfig['dbname'],
+                $databaseConfig['user'],
+                $databaseConfig['password'],
+                $databaseConfig['host'],
+                $databaseConfig['driver']
+            );
+        });
+
+
+        $app['item_repository'] = $app->share(function () use ($app) {
+            return $app['em']->getRepository(
+              'Edysanchez\Mathtrade\Domain\Model\MathtradeItem\MathtradeItem'
+          );
+
+        });
+
+        $app['em'] = $app->share(function ($app) {
+            $entityManagerFactory = (new EntityManagerFactory());
+            $built= $entityManagerFactory->build($app['config']['database']);
+            return $built;
+
         });
 
         $app['game_repository'] = $app->share(function () use ($app) {
@@ -120,18 +136,6 @@ class Application
 
         $app['wildcard_repository'] = $app->share(function () use ($app) {
            return new WildCardRepository($app['doctrine_client'], $app['mathtrade_item_repository']);
-        });
-
-        $app['doctrine_client'] = $app->share(function () use ($app) {
-            $databaseConfig = $app['config']['database'];
-
-            return new DoctrineClient(
-                $databaseConfig['dbname'],
-                $databaseConfig['user'],
-                $databaseConfig['password'],
-                $databaseConfig['host'],
-                $databaseConfig['driver']
-            );
         });
 
         $app['add_board_game_geek_games'] = $app->share(function () use ($app) {

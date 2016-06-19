@@ -1,0 +1,8 @@
+Edysanchez\Mathtrade\Domain\Model\Game\Game:
+  type: entity
+  id:
+    id:
+      column: id
+      type: integer
+  table: items
+  repositoryClass: Edysanchez\Mathtrade\Infrastructure\Persistence\Doctrine\Game\GameRepository

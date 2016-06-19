@@ -1,0 +1,15 @@
+Edysanchez\Mathtrade\Domain\Model\MathtradeItem\MathtradeItem:
+  type: entity
+  id:
+    id:
+      column: id
+      type: integer
+  table: items_mt
+  repositoryClass: Edysanchez\Mathtrade\Infrastructure\Persistence\Doctrine\MathtradeItem\MathtradeItemRepository
+  oneToMany:
+    game:
+      targetEntity: Edysanchez\Mathtrade\Domain\Model\Game\Game
+      joinColumn:
+          name: item_id
+          referencedColumnName: id
+      mappedBy: Game
